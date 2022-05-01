@@ -40,8 +40,8 @@ void func_PAINT(HWND hwnd)
 	// 漢字
 	{
 		const char* str_mb = u8"utf-8の文字列";
-		wchar_t	 str_wide[256];
 	 	int len = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
+		wchar_t	 str_wide[len];
 	 	int ___ = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wide, len );
 		TextOutW( hdc,10,100, str_wide, len ); 
 	}
