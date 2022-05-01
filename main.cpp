@@ -8,26 +8,26 @@ void func_PAINT(HWND hwnd)
 //---------------------------------------------------------------------
 {
 
-    PAINTSTRUCT ps;
-    RECT rect;
+	PAINTSTRUCT ps;
+	RECT rect;
 
-    GetClientRect(hwnd, &rect);
+	GetClientRect(hwnd, &rect);
 
-    if (rect.bottom == 0) 
-    {
-        return;
-    }
+	if (rect.bottom == 0) 
+	{
+		return;
+	}
 
-    HDC hdc = BeginPaint(hwnd, &ps);
+	HDC hdc = BeginPaint(hwnd, &ps);
 
 	// 点
-    for (int i=0; i < 2000; i++) 
-    {
+	for (int i=0; i < 2000; i++) 
+	{
 
-        int x = rand() % rect.right;
-        int y = rand() % rect.bottom;
-        SetPixel(hdc, x, y, RGB(255, 0, 0));
-    }
+		int x = rand() % rect.right;
+		int y = rand() % rect.bottom;
+		SetPixel(hdc, x, y, RGB(255, 0, 0));
+	}
 
 	// 矩形
 	Rectangle(hdc, 50, 50, 200, 150);  // 描画
@@ -46,7 +46,7 @@ void func_PAINT(HWND hwnd)
 		TextOutW( hdc,10,100, str_wide, len ); 
 	}
 
-    EndPaint(hwnd, &ps);
+	EndPaint(hwnd, &ps);
 }
 
 
@@ -55,16 +55,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //---------------------------------------------------------------------
 {
 
-    switch(msg) 
-    {
+	switch(msg) 
+	{
 
-        case WM_PAINT:
-            func_PAINT(hwnd);
-            break;
+		case WM_PAINT:
+			func_PAINT(hwnd);
+			break;
 
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			return 0;
 
 		case WM_KEYDOWN:
 			if ( wParam == VK_ESCAPE ) 
@@ -73,9 +73,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-    }
+	}
 
-    return DefWindowProcW(hwnd, msg, wParam, lParam);
+	return DefWindowProcW(hwnd, msg, wParam, lParam);
 }
 
 //---------------------------------------------------------------------
@@ -85,26 +85,26 @@ main()
 	HINSTANCE	hInstance	 = GetModuleHandle( NULL );
 
 
-    MSG  msg;
-    WNDCLASSW wc = {0};
+	MSG  msg;
+	WNDCLASSW wc = {0};
 
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpszClassName = L"GDI sample";
-    wc.hInstance     = hInstance;
-    wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
-    wc.lpfnWndProc   = WndProc;
-    wc.hCursor       = LoadCursor(0, IDC_ARROW);
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpszClassName = L"GDI sample";
+	wc.hInstance	 = hInstance;
+	wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+	wc.lpfnWndProc   = WndProc;
+	wc.hCursor	   = LoadCursor(0, IDC_ARROW);
 
-    RegisterClassW(&wc);
-    CreateWindowW(wc.lpszClassName, L"GDI sample",
-                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                100, 100, 320, 240, NULL, NULL, hInstance, NULL);
+	RegisterClassW(&wc);
+	CreateWindowW(wc.lpszClassName, L"GDI sample",
+				WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+				100, 100, 320, 240, NULL, NULL, hInstance, NULL);
 
-    while (GetMessage(&msg, NULL, 0, 0)) {
-    
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+	while (GetMessage(&msg, NULL, 0, 0)) {
+	
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 
-    return 0;
+	return 0;
 }
