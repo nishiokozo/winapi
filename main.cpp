@@ -1,96 +1,31 @@
 #include <windows.h>
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <wchar.h>
-#include <locale.h>
-#include <limits.h>
-#include <iostream>
-#include <clocale>
-#include <cstdlib>
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void DrawPixels(HWND hwnd);
 
-//int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-//    PWSTR lpCmdLine, int nCmdShow) {
 //---------------------------------------------------------------------
-main()
+void func_PAINT(HWND hwnd) 
 //---------------------------------------------------------------------
 {
-		HINSTANCE	hInstance	 = GetModuleHandle( NULL );
-	printf("MB_CUR_MAX %d\n", MB_CUR_MAX );
-
-const char* str_multibyte1="マルチバイト文字";
-const char* str_multibyte2=u8"マルチバイト文字";
-
-
-
-    MSG  msg;
-    WNDCLASSW wc = {0};
-
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpszClassName = L"Pixels";
-    wc.hInstance     = hInstance;
-    wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
-    wc.lpfnWndProc   = WndProc;
-    wc.hCursor       = LoadCursor(0, IDC_ARROW);
-
-    RegisterClassW(&wc);
-    CreateWindowW(wc.lpszClassName, L"Pixels",
-                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                100, 100, 300, 250, NULL, NULL, hInstance, NULL);
-
-    while (GetMessage(&msg, NULL, 0, 0)) {
-    
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-
-    srand(time(NULL));
-
-//    return (int) msg.wParam;
-    return 0;
-}
-
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
-    WPARAM wParam, LPARAM lParam) {
-
-    switch(msg) {
-
-        case WM_PAINT:
-
-            DrawPixels(hwnd);
-            break;
-
-        case WM_DESTROY:
-
-            PostQuitMessage(0);
-            return 0;
-    }
-
-    return DefWindowProcW(hwnd, msg, wParam, lParam);
-}
-
-void DrawPixels(HWND hwnd) {
 
     PAINTSTRUCT ps;
-    RECT r;
+    RECT rect;
 
-    GetClientRect(hwnd, &r);
+    GetClientRect(hwnd, &rect);
 
-    if (r.bottom == 0) {
-    
+    if (rect.bottom == 0) 
+    {
         return;
     }
 
     HDC hdc = BeginPaint(hwnd, &ps);
 
 	// 点
-    for (int i=0; i<1000; i++) {
+    for (int i=0; i < 2000; i++) 
+    {
 
-        int x = rand() % r.right;
-        int y = rand() % r.bottom;
+        int x = rand() % rect.right;
+        int y = rand() % rect.bottom;
         SetPixel(hdc, x, y, RGB(255, 0, 0));
     }
 
@@ -112,4 +47,64 @@ void DrawPixels(HWND hwnd) {
 	}
 
     EndPaint(hwnd, &ps);
+}
+
+
+//---------------------------------------------------------------------
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
+//---------------------------------------------------------------------
+{
+
+    switch(msg) 
+    {
+
+        case WM_PAINT:
+            func_PAINT(hwnd);
+            break;
+
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+
+		case WM_KEYDOWN:
+			if ( wParam == VK_ESCAPE ) 
+			{
+				PostQuitMessage( 0 );
+			}
+			break;
+
+    }
+
+    return DefWindowProcW(hwnd, msg, wParam, lParam);
+}
+
+//---------------------------------------------------------------------
+main()
+//---------------------------------------------------------------------
+{
+	HINSTANCE	hInstance	 = GetModuleHandle( NULL );
+
+
+    MSG  msg;
+    WNDCLASSW wc = {0};
+
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpszClassName = L"GDI sample";
+    wc.hInstance     = hInstance;
+    wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+    wc.lpfnWndProc   = WndProc;
+    wc.hCursor       = LoadCursor(0, IDC_ARROW);
+
+    RegisterClassW(&wc);
+    CreateWindowW(wc.lpszClassName, L"GDI sample",
+                WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                100, 100, 320, 240, NULL, NULL, hInstance, NULL);
+
+    while (GetMessage(&msg, NULL, 0, 0)) {
+    
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
 }
