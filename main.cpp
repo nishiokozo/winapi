@@ -46,6 +46,37 @@ void func_PAINT(HWND hwnd)
 		TextOutW( hdc,10,100, str_wide, len ); 
 	}
 
+	// フォント
+	{
+		const char*	str = u8"フォント";
+		int	x = 180;
+		int	y = 60;
+		int height = 32;
+		int width = 0;	// 0:デフォルト
+		int	deg = 320;
+		int	cEscapement = deg*10;
+		int	cOrientation = 0;
+		{
+			HFONT hFont = CreateFont(
+				height , width , cEscapement , cOrientation , FW_REGULAR , FALSE, FALSE , FALSE ,
+				SHIFTJIS_CHARSET , OUT_DEFAULT_PRECIS ,
+				CLIP_DEFAULT_PRECIS , DEFAULT_QUALITY , 
+				VARIABLE_PITCH | FF_ROMAN , NULL
+			);
+			SelectObject(hdc , hFont);
+			{
+				const char* str_mb = str;
+			 	int len = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
+				wchar_t	 str_wide[len];
+			 	int ___ = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wide, len );
+				TextOutW( hdc,x,y, str_wide, len ); 
+			}
+
+			SelectObject(hdc , GetStockObject(SYSTEM_FONT));
+			DeleteObject(hFont);
+		}
+	}
+
 	EndPaint(hwnd, &ps);
 }
 
