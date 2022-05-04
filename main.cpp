@@ -30,6 +30,7 @@ void func_PAINT(HWND hwnd)
 		SetPixel(hdc, x, y, RGB(255, 0, 0));
 	}
 
+
 	// 矩形
 	Rectangle(hdc, 50, 50, 200, 150);  // 描画
 
@@ -38,9 +39,20 @@ void func_PAINT(HWND hwnd)
 	LineTo(hdc , 110 , 20);
 	LineTo(hdc , 130 , 110);
 
-	// 色	赤
+	// 線の色
+	SelectObject(hdc, GetStockObject(DC_PEN));
+	SetDCPenColor(hdc, RGB(255,0,0));
+
+	// 塗りつぶしの色
+	SelectObject(hdc, GetStockObject(DC_BRUSH));
+	SetDCBrushColor(hdc, RGB(0,0,255));
+
+	// サークル
+   	Ellipse( hdc , 20 , 20 , 50 , 50 );
+
+	// 文字色	黒
 	{
-		COLORREF col = RGB(255,0,0); 
+		COLORREF col = RGB(0,0,0); 
 		SetTextColor (hdc , col );
 	}
 	// 漢字
@@ -53,9 +65,9 @@ void func_PAINT(HWND hwnd)
 		TextOutW( hdc,10,100, str_wb, len_wb ); 
 	}
 
-	// 色	青
+	// 文字色	青
 	{
-		COLORREF col = RGB(0,0,255); 
+		COLORREF col = RGB(255,0,255); 
 		SetTextColor (hdc , col );
 	}
 	// フォント
@@ -104,6 +116,10 @@ void func_PAINT(HWND hwnd)
 
 		// フォントセンター表示
 		{
+			// 線の色	黒
+			SelectObject(hdc, GetStockObject(DC_PEN));
+			SetDCPenColor(hdc, RGB(0,0,0));
+
 			int sz = 30;
 			MoveToEx(hdc , x1 , y1-sz , NULL);	LineTo(hdc , x1 ,y1+sz);
 			MoveToEx(hdc , x1-sz, y1 , NULL);	LineTo(hdc , x1+sz,y1);
