@@ -48,8 +48,25 @@ void func_PAINT(HWND hwnd)
 	SetDCBrushColor(hdc, RGB(0,0,255));
 
 	// サークル
-   	Ellipse( hdc , 20 , 20 , 50 , 50 );
-
+	{
+		int x = 40;
+		int y = 160;
+		int r = 35;
+		float	rs = 3.141592/180.0*(-100);
+		float	re = 3.141592/180.0*(-10);
+		int x3 = r*cos(rs);
+		int y3 = r*sin(rs);
+		int x4 = r*cos(re);
+		int y4 = r*sin(re);
+	   	Ellipse( hdc, x-r 	, y-r , x+r , y+r );
+		x+=r*2;
+		Arc(hdc   	, x-r   , y-r , x+r , y+r , x+x3,y+y3,x+x4,y+y4);
+		x+=r*2;
+		Pie(hdc   	, x-r   , y-r , x+r , y+r , x+x3,y+y3,x+x4,y+y4);
+		x+=r*2;
+		Chord(hdc 	, x-r   , y-r , x+r , y+r , x+x3,y+y3,x+x4,y+y4);
+	}
+		
 	// 文字色	黒
 	{
 		COLORREF col = RGB(0,0,0); 
