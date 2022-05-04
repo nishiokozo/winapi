@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 //---------------------------------------------------------------------
@@ -40,40 +41,61 @@ void func_PAINT(HWND hwnd)
 	// 漢字
 	{
 		const char* str_mb = u8"utf-8の文字列";
-	 	int len = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
-		wchar_t	 str_wide[len];
-	 	int ___ = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wide, len );
-		TextOutW( hdc,10,100, str_wide, len ); 
+	 	int len_wb = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
+		wchar_t	 str_wb[len_wb];
+	 	MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wb, len_wb );
+		TextOutW( hdc,10,100, str_wb, len_wb ); 
 	}
 
 	// フォント
 	{
-		const char*	str = u8"フォント";
-		int	x = 180;
-		int	y = 60;
+		const char* str_mb = u8"フォント";
+		int	x1 = 180;
+		int	y1 = 60;
 		int height = 32;
 		int width = 0;	// 0:デフォルト
-		int	deg = 320;
-		int	cEscapement = deg*10;
-		int	cOrientation = 0;
+		int	deg = 45;
+		float rate_x = 0.5;	// 0.0:top	1.0:bottom	0.5:middle
+		float rate_y = 0.5;	// 0.0:top	1.0:bottom	0.5:middle
+	
 		{
-			HFONT hFont = CreateFont(
-				height , width , cEscapement , cOrientation , FW_REGULAR , FALSE, FALSE , FALSE ,
-				SHIFTJIS_CHARSET , OUT_DEFAULT_PRECIS ,
-				CLIP_DEFAULT_PRECIS , DEFAULT_QUALITY , 
-				VARIABLE_PITCH | FF_ROMAN , NULL
-			);
-			SelectObject(hdc , hFont);
+			// utf8をsjisに変換
+		 	int len_wb = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
+			wchar_t	 str_wb[len_wb];
+		 	MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wb, len_wb );
+			//
+			int	cEscapement = deg*10;
+			int	cOrientation = 0;
+			float rot = 3.141592*(deg)/180.0;
+			SIZE size = {0,0}; 
 			{
-				const char* str_mb = str;
-			 	int len = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
-				wchar_t	 str_wide[len];
-			 	int ___ = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wide, len );
-				TextOutW( hdc,x,y, str_wide, len ); 
+				HFONT hFont = CreateFont(
+					height , width , cEscapement , cOrientation , FW_REGULAR , FALSE, FALSE , FALSE ,
+					SHIFTJIS_CHARSET , OUT_DEFAULT_PRECIS ,
+					CLIP_DEFAULT_PRECIS , DEFAULT_QUALITY , 
+					VARIABLE_PITCH | FF_ROMAN , NULL
+				);
+				SelectObject(hdc , hFont);
+				GetTextExtentPoint32W( hdc, str_wb, len_wb, &size );
+				//
+				int x = -size.cx*rate_x;
+				int y = -size.cy*rate_y;
+				int px = x1+(x*cos(-rot)-y*sin(-rot));
+				int py = y1+(x*sin(-rot)+y*cos(-rot));
+				//
+				TextOutW( hdc,px,py, str_wb, len_wb ); 
+				SelectObject(hdc , GetStockObject(SYSTEM_FONT));
+				DeleteObject(hFont);
+
 			}
 
-			SelectObject(hdc , GetStockObject(SYSTEM_FONT));
-			DeleteObject(hFont);
+		}
+
+		// フォントセンター表示
+		{
+			int sz = 30;
+			MoveToEx(hdc , x1 , y1-sz , NULL);	LineTo(hdc , x1 ,y1+sz);
+			MoveToEx(hdc , x1-sz, y1 , NULL);	LineTo(hdc , x1+sz,y1);
 		}
 	}
 
