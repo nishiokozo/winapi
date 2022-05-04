@@ -49,15 +49,15 @@ void func_PAINT(HWND hwnd)
 
 	// フォント
 	{
-		const char* str_mb = u8"フォント";
+		const char* str_mb = u8"回転するよ";
 		int	x1 = 180;
 		int	y1 = 60;
 		int height = 32;
 		int width = 0;	// 0:デフォルト
-		int	deg = 45;
+		int	deg = 20;
 		float rate_x = 0.5;	// 0.0:top	1.0:bottom	0.5:middle
 		float rate_y = 0.5;	// 0.0:top	1.0:bottom	0.5:middle
-	
+		COLORREF col = RGB(0,0,255); 
 		{
 			// utf8をsjisに変換
 		 	int len_wb = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
@@ -76,6 +76,8 @@ void func_PAINT(HWND hwnd)
 					VARIABLE_PITCH | FF_ROMAN , NULL
 				);
 				SelectObject(hdc , hFont);
+				SetTextColor (hdc , col );
+				SetBkMode(hdc,TRANSPARENT);	// 抜き
 				GetTextExtentPoint32W( hdc, str_wb, len_wb, &size );
 				//
 				int x = -size.cx*rate_x;
