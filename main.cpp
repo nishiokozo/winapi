@@ -38,15 +38,26 @@ void func_PAINT(HWND hwnd)
 	LineTo(hdc , 110 , 20);
 	LineTo(hdc , 130 , 110);
 
+	// 色	赤
+	{
+		COLORREF col = RGB(255,0,0); 
+		SetTextColor (hdc , col );
+	}
 	// 漢字
 	{
 		const char* str_mb = u8"utf-8の文字列";
 	 	int len_wb = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
 		wchar_t	 str_wb[len_wb];
 	 	MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wb, len_wb );
+		SetBkMode(hdc,TRANSPARENT);	// 抜き
 		TextOutW( hdc,10,100, str_wb, len_wb ); 
 	}
 
+	// 色	青
+	{
+		COLORREF col = RGB(0,0,255); 
+		SetTextColor (hdc , col );
+	}
 	// フォント
 	{
 		const char* str_mb = u8"回転するよ";
@@ -57,7 +68,6 @@ void func_PAINT(HWND hwnd)
 		int	deg = 20;
 		float rate_x = 0.5;	// 0.0:top	1.0:bottom	0.5:middle
 		float rate_y = 0.5;	// 0.0:top	1.0:bottom	0.5:middle
-		COLORREF col = RGB(0,0,255); 
 		{
 			// utf8をsjisに変換
 		 	int len_wb = MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), NULL, 0 );
@@ -76,7 +86,6 @@ void func_PAINT(HWND hwnd)
 					VARIABLE_PITCH | FF_ROMAN , NULL
 				);
 				SelectObject(hdc , hFont);
-				SetTextColor (hdc , col );
 				SetBkMode(hdc,TRANSPARENT);	// 抜き
 				GetTextExtentPoint32W( hdc, str_wb, len_wb, &size );
 				//
