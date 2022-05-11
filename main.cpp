@@ -2,7 +2,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string>
 
+using	namespace std;
+
+wstring mb2wb( string str_mb )
+{
+	int letter_count = MultiByteToWideChar(CP_UTF8, 0, str_mb.c_str(), str_mb.size(), NULL, 0 );
+	if ( letter_count > 0 )
+	{
+		wchar_t	 wstr[letter_count+1];
+		MultiByteToWideChar(CP_UTF8, 0, str_mb.c_str(), str_mb.size(), wstr, letter_count );
+		return wstring(wstr, letter_count);
+	}
+	else
+	{
+		return L"";
+	}
+}
+string wb2mb( wstring str_wb )
+{
+    int AnsiSizeInBytes = WideCharToMultiByte(CP_UTF8,
+                                           0,
+                                           str_wb.c_str(),
+                                           str_wb.size(),
+                                           NULL,
+                                           0, NULL, NULL);
+
+	char str_mb[AnsiSizeInBytes];
+    int bytelen = 		  WideCharToMultiByte(CP_UTF8,
+                                           0,
+                                           str_wb.c_str(),
+                                           str_wb.size(),
+                                           str_mb,
+                                           AnsiSizeInBytes, 
+                                           NULL, NULL);
+	string mstr = string(str_mb,bytelen-1);
+	return mstr;
+}
+
+
+std::string trim(const std::string &s)
+{
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) 
+    {
+        start++;
+    }
+ 
+    auto end = s.end();
+    do 
+    {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+ 
+    return std::string(start, end + 1);
+}
 
 //---------------------------------------------------------------------
 void func_PAINT(HWND hwnd) 
@@ -80,6 +135,13 @@ void func_PAINT(HWND hwnd)
 	 	MultiByteToWideChar(CP_UTF8, 0, str_mb, strlen(str_mb), str_wb, len_wb );
 		SetBkMode(hdc,TRANSPARENT);	// 抜き
 		TextOutW( hdc,10,100, str_wb, len_wb ); 
+	}
+	// 漢字2
+	{
+		const char* str_mb = u8"utf-8の文字列";
+		wstring str_wb = mb2wb( str_mb );
+		TextOutW( hdc,10,80, str_wb.c_str(), str_wb.size()); 
+
 	}
 
 	// 文字色	青
